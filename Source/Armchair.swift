@@ -1708,30 +1708,14 @@ open class Manager : ArmchairManager {
     }
     
     private func getRootViewController() -> UIViewController? {
-        if var window = UIApplication.shared.keyWindow {
-            
-            if window.windowLevel != UIWindowLevelNormal {
-                let windows: NSArray = UIApplication.shared.windows as NSArray
-                for candidateWindow in windows {
-                    if let candidateWindow = candidateWindow as? UIWindow {
-                        if candidateWindow.windowLevel == UIWindowLevelNormal {
-                            window = candidateWindow
-                            break
-                        }
-                    }
-                }
+        if var topController = UIApplication.shared.keyWindow?.rootViewController {
+            while let presentedViewController = topController.presentedViewController {
+                topController = presentedViewController
             }
-            
-            for subView in window.subviews {
-                if let responder = subView.next {
-                    if responder.isKind(of: UIViewController.self) {
-                        return topMostViewController(responder as? UIViewController)
-                    }
-                    
-                }
-            }
+    
+            return topController
         }
-        
+    
         return nil
     }
     #endif
